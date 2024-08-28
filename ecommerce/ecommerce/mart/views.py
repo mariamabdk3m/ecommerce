@@ -11,6 +11,7 @@ def mart(request):
 
 def cart(request):
     if request.method == 'POST':
-        selected_products = request.POST.getlist('selected_products')
+        selected_product_ids = request.POST.getlist('selected_products')
+        selected_products = [product['name'] for product in PRODUCTS if str(product['id']) in selected_product_ids]
         return render(request, 'cart.html', {'selected_products': selected_products})
     return render(request, 'cart.html', {'selected_products': []})

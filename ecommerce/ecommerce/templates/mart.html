@@ -6,7 +6,7 @@
     {% csrf_token %}
     {% for product in products %}
         <div>
-            <input type="checkbox" name="product" value="{{ product.id }}">
+            <input type="checkbox" name="selected_products" value="{{ product.id }}">
             {{ product.name }} - ${{ product.price }}
         </div>
     {% endfor %}

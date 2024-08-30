@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Mart{% endblock %}
+{% block content %}
+<h1>Products</h1>
+<form method="POST" action="{% url 'cart' %}">
+    {% csrf_token %}
+    {% for product in products %}
+        <div>
+            <input type="checkbox" name="selected_products" value="{{ product.id }}">
+            {{ product.name }} - ${{ product.price }}
+        </div>
+    {% endfor %}
+    <button type="submit">Add to Cart</button>
+</form>
+{% endblock %}

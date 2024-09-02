@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Order List
+{% endblock title %}
+
+{% block body %}
+    <div class="container">
+        <h1>Order List</h1>
+        <table class="order-table">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Order Name</th>
+                    <th>Username</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in data %}
+                    <tr id="order-{{ row.orderID }}">
+                        <td>{{ row.orderID }}</td>
+                        <td>{{ row.orderName }}</td>
+                        <td>{{ row.username }}</td>
+                        <td>
+                            <select name="status" data-order-id="{{ row.orderID }}" class="status-dropdown">
+                                <option value="Processing" {% if row.status == 'Processing' %}selected{% endif %}>Processing</option>
+                                <option value="Shipped" {% if row.status == 'Shipped' %}selected{% endif %}>Shipped</option>
+                                <option value="Out for Delivery" {% if row.status == 'Out for Delivery' %}selected{% endif %}>Out for Delivery</option>
+                                <option value="Delivered" {% if row.status == 'Delivered' %}selected{% endif %}>Delivered</option>
+                            </select>
+                        </td>
+                        <td>
+                            <!-- Delete Button -->
+                            <button type="button" class="btn btn-danger delete-btn" data-order-id="{{ row.orderID }}">Delete</button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Add jQuery to handle AJAX requests -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Handle status change
+        $(document).on('change', '.status-dropdown', function() {
+            var orderId = $(this).data('order-id');
+            var newStatus = $(this).val();
+
+            $.ajax({
+                url: "{% url 'update-order-status' 0 %}".replace('0', orderId),
+                type: 'POST',
+                data: {
+                    'status': newStatus,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    console.log('Status updated successfully!');
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error updating status:', error);
+                }
+            });
+        });
+
+        // Handle delete button click
+        $(document).on('click', '.delete-btn', function() {
+            var orderId = $(this).data('order-id');
+
+            $.ajax({
+                url: "{% url 'delete-order' 0 %}".replace('0', orderId),
+                type: 'POST',
+                data: {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    $('#order-' + orderId).remove();
+                    console.log('Order deleted successfully!');
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error deleting order:', error);
+                }
+            });
+        });
+    </script>
+{% endblock body %}

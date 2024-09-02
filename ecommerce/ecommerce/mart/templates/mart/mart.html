@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mart</title>
+</head>
+<body>
+    <h1>Active Products</h1>
+    <form method="POST" action="{% url 'cart' %}">
+        {% csrf_token %}
+        {% for product in products %}
+            <div>
+                <input type="checkbox" name="products" value="{{ product.id }}">
+                <label>{{ product.name }} - ${{ product.price }}</label>
+            </div>
+        {% endfor %}
+        <button type="submit">Add to Cart</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,35 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Orders</title>
+    <link rel="stylesheet" href="{% static 'css/styles2.css' %}">
+</head>
+<body>
+    <div class="orders-container">
+        {% for order in orders %}
+        <div class="order-card">
+            <h3>Order ID: {{ order.orderID }}</h3>
+            <p>Order Name: {{ order.orderName }}</p>
+            <div class="status">Status: {{ order.status }}</div>
+
+            <!-- Progress bar with status circles -->
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress" style="width: {% if order.status == 'Delivered' %}100{% elif order.status == 'Out for Delivery' %}75{% elif order.status == 'Shipped' %}50{% elif order.status == 'Processing' %}25{% else %}0{% endif %}%"></div>
+                </div>
+                <div class="progress-steps">
+                    <span class="{% if order.status in 'Processing, Shipped, Out for Delivery, Delivered' %}completed{% endif %}">Processing</span>
+                    <span class="{% if order.status in 'Shipped, Out for Delivery, Delivered' %}completed{% endif %}">Shipped</span>
+                    <span class="{% if order.status in 'Out for Delivery, Delivered' %}completed{% endif %}">Out for Delivery</span>
+                    <span class="{% if order.status == 'Delivered' %}completed{% endif %}">Delivered</span>
+                </div>
+            </div>
+
+            <hr>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

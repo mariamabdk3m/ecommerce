@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class Product(models.Model):
     name = models.CharField(max_length=100)
@@ -16,16 +17,17 @@ class Product(models.Model):
 
 class Order(models.Model):
     order_name = models.CharField(max_length=100)
-    order_id = models.AutoField(primary_key=True)  
-    products = models.ManyToManyField(Product, related_name='orders')  
+    order_id = models.AutoField(primary_key=True)
+    products = models.ManyToManyField(Product, related_name='orders')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')  # Add this line
 
     def __str__(self):
         return f"Order {self.order_id}: {self.order_name}"
 
-
 class Transaction(models.Model):
-    transaction_order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name='transaction')  
-    transaction_date = models.DateTimeField(auto_now_add=True)  
+    transaction_order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name='transaction')
+    transaction_date = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=50, default='Pending')  # Add this line
 
     def __str__(self):
         return f"Transaction for Order {self.transaction_order.order_id}"
